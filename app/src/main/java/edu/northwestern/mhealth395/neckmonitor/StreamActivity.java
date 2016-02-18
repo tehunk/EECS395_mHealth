@@ -14,6 +14,7 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+
 public class StreamActivity extends AppCompatActivity {
 
     public static final String DEVICE_EXTRA = "DEVICE";
@@ -32,6 +33,9 @@ public class StreamActivity extends AppCompatActivity {
 
     private final String TAG = "StreamActivity:";
     private BluetoothDevice device;
+    private GraphView graph;
+    private LineGraphSeries<DataPoint> mSeries;
+    private double graph2LastXValue = 5d;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +43,14 @@ public class StreamActivity extends AppCompatActivity {
         setContentView(R.layout.activity_stream);
 
         Bundle extras = getIntent().getExtras();
+        graph = (GraphView) findViewById(R.id.graph);
+        mSeries = new LineGraphSeries<>();
+        graph.addSeries(mSeries);
+        graph.getViewport().setXAxisBoundsManual(true);
+        graph.getViewport().setMinX(0);
+        graph.getViewport().setMaxX(40);
+
+
 
         if (extras != null) {
             device = (BluetoothDevice) extras.get(DEVICE_EXTRA);
@@ -84,8 +96,8 @@ public class StreamActivity extends AppCompatActivity {
                 case BROADCAST_DATA:
                     StringBuilder message = new StringBuilder("Data received...");
                     Bundle extras = intent.getExtras();
-                    /*if (extras != null) {
-                        if (extras.containsKey(B_DATA_ACC_X)) {
+                    if (extras != null) {
+                        /*if (extras.containsKey(B_DATA_ACC_X)) {
                             message.append("\naccelerometer x: ");
                             message.append(Float.toString(extras.getFloat(B_DATA_ACC_X)));
                         }
@@ -97,32 +109,23 @@ public class StreamActivity extends AppCompatActivity {
                             message.append("\naccelerometer z: ");
                             message.append(Float.toString(extras.getFloat(B_DATA_ACC_Z)));
                         }
-                        if (extras.containsKey(B_DATA_AUDIO)) {
-                            message.append("\nAudio: ");
-                            message.append(Float.toString(extras.getFloat(B_DATA_AUDIO)));
-                        }
                         if (extras.containsKey(B_DATA_PEIZO)) {
                             message.append("\nPiezo: ");
                             message.append(Float.toString(extras.getFloat(B_DATA_PEIZO)));
                         }
+                        */
+                        if (extras.containsKey(B_DATA_AUDIO)) {
+                            message.append("\nAudio: ");
+                            message.append(Float.toString(extras.getFloat(B_DATA_AUDIO)));
+                            graph2LastXValue += 1d;
+                            mSeries.appendData(new DataPoint(graph2LastXValue, 1000 - extras.getFloat(B_DATA_AUDIO)), true, 40);
+                        }
                     }
-                    ((TextView) findViewById(R.id.connectionText)).setText(message);*/
-
-                    GraphView graph = (GraphView) findViewById(R.id.graph);
-                    LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
-                            new DataPoint(0, 1),
-                            new DataPoint(1, 5),
-                            new DataPoint(2, 3),
-                            new DataPoint(3, 2),
-                            new DataPoint(4, 6)
-                    });
-                    graph.addSeries(series);
+                    ((TextView) findViewById(R.id.connectionText)).setText(message);
                     break;
                 default:
                     Log.e(TAG, "Unknown broadcast with correct action");
             }
         }
     };
-
-
 }

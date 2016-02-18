@@ -13,4 +13,12 @@
         android:layout_height="wrap_content"
         android:text="Not connected..."
         android:id="@+id/connectionText"/>
+
+    <com.jjoe64.graphview.GraphView
+        android:layout_width="match_parent"
+        android:layout_height="200dip"
+        android:id="@+id/graph"
+        android:layout_below="@+id/section_label"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 </LinearLayout>
