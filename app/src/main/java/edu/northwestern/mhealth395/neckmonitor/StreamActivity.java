@@ -10,6 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+
 public class StreamActivity extends AppCompatActivity {
 
     public static final String DEVICE_EXTRA = "DEVICE";
@@ -80,7 +84,7 @@ public class StreamActivity extends AppCompatActivity {
                 case BROADCAST_DATA:
                     StringBuilder message = new StringBuilder("Data received...");
                     Bundle extras = intent.getExtras();
-                    if (extras != null) {
+                    /*if (extras != null) {
                         if (extras.containsKey(B_DATA_ACC_X)) {
                             message.append("\naccelerometer x: ");
                             message.append(Float.toString(extras.getFloat(B_DATA_ACC_X)));
@@ -102,7 +106,17 @@ public class StreamActivity extends AppCompatActivity {
                             message.append(Float.toString(extras.getFloat(B_DATA_PEIZO)));
                         }
                     }
-                    ((TextView) findViewById(R.id.connectionText)).setText(message);
+                    ((TextView) findViewById(R.id.connectionText)).setText(message);*/
+
+                    GraphView graph = (GraphView) findViewById(R.id.graph);
+                    LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
+                            new DataPoint(0, 1),
+                            new DataPoint(1, 5),
+                            new DataPoint(2, 3),
+                            new DataPoint(3, 2),
+                            new DataPoint(4, 6)
+                    });
+                    graph.addSeries(series);
                     break;
                 default:
                     Log.e(TAG, "Unknown broadcast with correct action");
